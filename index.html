@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#176b5b">
+  <title>رفيق الدواء | تذكير الأدوية</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">انتقل إلى المحتوى الرئيسي</a>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">＋</div>
+      <div>
+        <p class="eyebrow">رفيق الدواء</p>
+        <h1>تذكير الأدوية اليومي</h1>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span id="todayLabel" class="date-label"></span>
+      <button id="soundToggle" class="button button-secondary" type="button" aria-pressed="false">🔔 تفعيل الصوت</button>
+    </div>
+  </header>
+
+  <main id="main" class="page-shell">
+    <section class="welcome-panel" aria-labelledby="welcomeTitle">
+      <div>
+        <p class="eyebrow">أهلاً بك</p>
+        <h2 id="welcomeTitle">خطوة صغيرة لروتين أكثر اطمئناناً</h2>
+        <p>تابع مواعيد الأدوية وسجّل حالة كل جرعة. اتبع دائماً تعليمات الطبيب أو الصيدلي.</p>
+      </div>
+      <div class="today-summary" aria-label="ملخص جرعات اليوم">
+        <span class="summary-label">جرعات اليوم</span>
+        <strong id="doseCount">0</strong>
+        <span id="doseSummary">لا توجد جرعات مسجلة بعد</span>
+      </div>
+    </section>
+
+    <section id="alertPanel" class="alert-panel" hidden aria-live="assertive" aria-atomic="true">
+      <div class="alert-icon" aria-hidden="true">🔔</div>
+      <div class="alert-copy">
+        <h2 id="alertTitle">حان موعد الدواء</h2>
+        <p id="alertText"></p>
+      </div>
+      <button id="dismissAlert" class="button button-secondary" type="button">إيقاف الصوت</button>
+    </section>
+
+    <nav class="tabs" aria-label="أقسام النظام">
+      <button class="tab active" type="button" data-view="today" aria-current="page">📅 جدول اليوم</button>
+      <button class="tab" type="button" data-view="medicines">💊 إدارة الأدوية</button>
+      <button class="tab" type="button" data-view="history">📋 سجل الجرعات</button>
+      <button class="tab" type="button" data-view="caregiver">🤝 مقدم الرعاية</button>
+    </nav>
+
+    <section id="view-today" class="view active" aria-labelledby="todayHeading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">نظرة يومية</p>
+          <h2 id="todayHeading">مواعيد اليوم</h2>
+          <p class="section-intro">استخدم الأزرار الكبيرة لتسجيل الحالة بدقة.</p>
+        </div>
+        <button id="goAddMedicine" class="button button-primary" type="button">＋ إضافة دواء</button>
+      </div>
+      <div class="status-legend" aria-label="دليل الحالات">
+        <span><i class="dot dot-pending"></i> بانتظار التأكيد</span>
+        <span><i class="dot dot-taken"></i> تم التأكيد</span>
+        <span><i class="dot dot-unconfirmed"></i> لم يتم التأكيد</span>
+      </div>
+      <div id="todayList" class="dose-list"></div>
+      <div id="emptyToday" class="empty-state" hidden>
+        <div class="empty-icon" aria-hidden="true">💊</div>
+        <h3>لا توجد أدوية مضافة</h3>
+        <p>أضف الدواء ومواعيده كما هو موضح في تعليمات الطبيب أو الصيدلي.</p>
+        <button class="button button-primary" type="button" data-open-add>إضافة أول دواء</button>
+      </div>
+    </section>
+
+    <section id="view-medicines" class="view" hidden aria-labelledby="medicinesHeading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">إدارة القائمة</p>
+          <h2 id="medicinesHeading">الأدوية المسجلة</h2>
+          <p class="section-intro">أدخل المعلومات كما وردت في الوصفة أو تعليمات المختص.</p>
+        </div>
+        <button class="button button-primary" type="button" data-open-add>＋ إضافة دواء</button>
+      </div>
+      <div id="medicineList" class="medicine-grid"></div>
+      <div id="emptyMedicines" class="empty-state" hidden>
+        <div class="empty-icon" aria-hidden="true">📝</div>
+        <h3>قائمة الأدوية فارغة</h3>
+        <p>لن تتم إضافة جرعات أو تعليمات طبية تلقائياً.</p>
+        <button class="button button-primary" type="button" data-open-add>إضافة دواء</button>
+      </div>
+    </section>
+
+    <section id="view-history" class="view" hidden aria-labelledby="historyHeading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">المتابعة والتوثيق</p>
+          <h2 id="historyHeading">سجل الجرعات</h2>
+          <p class="section-intro">السجل يوثق ما تم تسجيله في هذا المتصفح فقط.</p>
+        </div>
+        <button id="exportHistory" class="button button-secondary" type="button">تنزيل السجل CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">التاريخ</th><th scope="col">الدواء</th><th scope="col">موعد الجرعة</th><th scope="col">الحالة</th><th scope="col">وقت التسجيل</th></tr></thead>
+          <tbody id="historyTable"></tbody>
+        </table>
+      </div>
+      <p id="emptyHistory" class="empty-note" hidden>لا توجد سجلات بعد. ستظهر الحالات هنا بعد تسجيلها.</p>
+    </section>
+
+    <section id="view-caregiver" class="view" hidden aria-labelledby="caregiverHeading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">المساندة اليومية</p>
+          <h2 id="caregiverHeading">مساحة مقدم الرعاية</h2>
+          <p class="section-intro">راجع الحالات غير المؤكدة وتأكد من التواصل عند الحاجة.</p>
+        </div>
+      </div>
+      <div class="caregiver-grid">
+        <article class="info-card">
+          <span class="info-icon" aria-hidden="true">🟢</span>
+          <h3>تم تأكيد التناول</h3>
+          <strong id="careTaken">0</strong>
+          <p>عدد جرعات اليوم التي سُجل تأكيد تناولها.</p>
+        </article>
+        <article class="info-card">
+          <span class="info-icon" aria-hidden="true">🟠</span>
+          <h3>بانتظار التأكيد</h3>
+          <strong id="carePending">0</strong>
+          <p>لم تُسجّل لها حالة بعد، ولا يعني ذلك أنها لم تؤخذ.</p>
+        </article>
+        <article class="info-card">
+          <span class="info-icon" aria-hidden="true">🔎</span>
+          <h3>لم يتم التأكيد</h3>
+          <strong id="careUnconfirmed">0</strong>
+          <p>راجع الحالة مع الشخص المعني؛ لا تغيّر الجرعة بناءً على السجل.</p>
+        </article>
+      </div>
+      <div class="notice-card">
+        <h3>تنبيه للسلامة</h3>
+        <p>هذا النموذج لا يقرر ما إذا كان ينبغي تناول جرعة فائتة أو تعديلها. في حال الشك، اتبع تعليمات الطبيب أو الصيدلي. لا تضاعف الجرعة لتعويض جرعة فائتة دون توجيه مختص.</p>
+      </div>
+      <div class="settings-card">
+        <h3>بيانات التجربة</h3>
+        <p>يمكنك تنزيل نسخة احتياطية من بيانات هذا المتصفح أو حذف بيانات التجربة.</p>
+        <div class="button-row">
+          <button id="backupData" class="button button-secondary" type="button">تنزيل نسخة احتياطية</button>
+          <button id="resetDemo" class="button button-danger" type="button">حذف بيانات التجربة</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer-note">
+      <span aria-hidden="true">ⓘ</span>
+      <p>رفيق الدواء أداة تذكير وتوثيق تجريبية، وليس جهازاً طبياً أو بديلاً عن الاستشارة الطبية. لا تعتمد عليه وحده لضمان تناول الدواء.</p>
+    </footer>
+  </main>
+
+  <dialog id="medicineDialog" class="modal" aria-labelledby="dialogTitle">
+    <form id="medicineForm" method="dialog">
+      <div class="modal-heading">
+        <div>
+          <p class="eyebrow">قائمة الأدوية</p>
+          <h2 id="dialogTitle">إضافة دواء</h2>
+        </div>
+        <button id="closeDialog" class="icon-button" type="button" aria-label="إغلاق النافذة">✕</button>
+      </div>
+      <input id="medicineId" type="hidden">
+      <div class="form-grid">
+        <label class="field full">
+          <span>اسم الدواء <b aria-hidden="true">*</b></span>
+          <input id="medicineName" name="medicineName" type="text" required maxlength="100" autocomplete="off" placeholder="اكتب الاسم كما في الوصفة">
+        </label>
+        <label class="field">
+          <span>الجرعة المسجلة <b aria-hidden="true">*</b></span>
+          <input id="medicineDose" name="medicineDose" type="text" required maxlength="80" placeholder="مثال: حسب الوصفة">
+        </label>
+        <label class="field">
+          <span>ملاحظات (اختياري)</span>
+          <input id="medicineNotes" name="medicineNotes" type="text" maxlength="180" placeholder="تعليمات المختص">
+        </label>
+        <fieldset class="field full">
+          <legend>مواعيد التذكير <b aria-hidden="true">*</b></legend>
+          <p class="field-help">أضف كل موعد وارد في تعليمات الطبيب أو الصيدلي.</p>
+          <div id="timesList" class="times-list"></div>
+          <button id="addTime" class="button button-secondary" type="button">＋ إضافة موعد</button>
+        </fieldset>
+      </div>
+      <p class="form-error" id="formError" role="alert" hidden></p>
+      <div class="modal-actions">
+        <button id="cancelDialog" class="button button-secondary" type="button">إلغاء</button>
+        <button class="button button-primary" type="submit">حفظ الدواء</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
