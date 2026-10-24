@@ -2,6 +2,11 @@
 
 نموذج أولي محلي لتذكير الأدوية لكبار السن، مبني باستخدام HTML وCSS وJavaScript دون مكتبات خارجية.
 
+<img src="screenshots/Home_page.png" width="400" alt="واجهة التطبيق">
+<img src="screenshots/Add_med.png" width="400" alt="واجهة التطبيق">
+<img src="screenshots/Assistant.png" width="400" alt="واجهة التطبيق">
+<img src="screenshots/Dose_list.png" width="400" alt="واجهة التطبيق">
+
 ## التشغيل
 1. فك ضغط المشروع.
 2. افتح `index.html` في متصفح حديث، ويفضل استخدام VS Code مع Live Server.
